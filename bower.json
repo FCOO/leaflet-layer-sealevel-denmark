@@ -1,6 +1,6 @@
 {
-  "name": "leaflet-geojsonlayer-sealevel",
-  "main": "leaflet-geojsonlayer-sealevel.js",
+  "name": "leaflet-layer-sealevel-denmark",
+  "main": "leaflet-layer-sealevel-denmark.js",
   "version": "0.1.0",
   "authors": [
     "Jesper Baasch-Larsen <jla@fcoo.dk>"
