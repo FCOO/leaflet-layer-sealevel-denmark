@@ -1,0 +1,21 @@
+{
+  "name": "leaflet-geojsonlayer-sealevel",
+  "main": "leaflet-geojsonlayer-sealevel.js",
+  "version": "0.1.0",
+  "authors": [
+    "Jesper Baasch-Larsen <jla@fcoo.dk>"
+  ],
+  "description": "Danish sea level stations for Leaflet",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "leaflet": "https://github.com/jblarsen/Leaflet.git#master",
+    "jquery": "~2.1.4"
+  }
+}
