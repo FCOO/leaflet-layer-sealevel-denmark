@@ -17,7 +17,7 @@
             maxZoom: 18,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</a>'
         }).addTo(map);
-        var sealevel = new L.GeoJSON.Sealevel({language: 'en'});
+        var sealevel = new L.GeoJSON.Sealevel({url: 'sealevel_stations_denmark.json', language: 'en'});
         map.addLayer(sealevel);
     </script>
 </body>
