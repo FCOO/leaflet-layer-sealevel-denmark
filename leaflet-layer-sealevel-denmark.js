@@ -7,7 +7,7 @@
             url: '../json/sealevel_stations_denmark.json',
             onEachFeature: function (feature, layer) {
                 var link_template = location.protocol + "//chart.fcoo.dk/station_timeseries.asp?s=:003__STATION__:046SeaLvl:002DK:001DEFAULT:04d620:04e400:04f0:04a1:04b48:04i0:04c1:04g0:0641:05opopup";
-                layer.bindPopup('<img src="' + link_template.replace('__STATION__', feature.properties.id) + '" height="350" width="500" />', {maxWidth: 700, maxHeight: 600});
+                layer.bindPopup('<img src="' + link_template.replace('__STATION__', feature.properties.id) + '" height="400" width="620" />', {maxWidth: 700, maxHeight: 600});
             },
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, {
