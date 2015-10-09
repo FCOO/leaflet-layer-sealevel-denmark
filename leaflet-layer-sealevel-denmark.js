@@ -75,7 +75,7 @@
             },
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, {
-                           radius: 8,
+                           radius: 7,
                            fillColor: "#ff7800",
                            color: "#000",
                            weight: 1,
