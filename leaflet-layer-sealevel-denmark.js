@@ -25,7 +25,12 @@
                         var linkTemplate = location.protocol + "//chart.fcoo.dk/station_timeseries.asp?s=:003${stationId}:046SeaLvl:002DK:001DEFAULT:04d620:04e400:04f0:04a1:04b48:04i0:04c1:04g0:0641:05opopup";
                         var link = linkTemplate.replace('${stationId}', feature.properties.id);
                         var createImage = function(link) {
-                            var query = Modernizr.mq('(min-width: 661px)');
+                            // Default to large screen size
+                            var query = true;
+                            if (typeof window.matchMedia != "undefined" || typeof window.msMatchMedia != "undefined") {
+                                var mq = window.matchMedia('(min-width: 661px)');
+                                query = mq.matches;
+                            }
                             var img;
                             if (query) {
                                 img = $('<img src="' + link + '" height="400" width="620" />');
