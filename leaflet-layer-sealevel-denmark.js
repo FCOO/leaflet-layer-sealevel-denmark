@@ -24,27 +24,51 @@
                         container.append($(header));
                         var linkTemplate = location.protocol + "//chart.fcoo.dk/station_timeseries.asp?s=:003${stationId}:046SeaLvl:002DK:001DEFAULT:04d620:04e400:04f0:04a1:04b48:04i0:04c1:04g0:0641:05opopup";
                         var link = linkTemplate.replace('${stationId}', feature.properties.id);
-                        var query = Modernizr.mq('(min-width: 620px)');
-                        var img;
-                        if (query) {
-                            img = $('<img src="' + link + '" height="400" width="620" />');
-                        } else {
-                            var viewportWidth = $(window).width();
-                            var viewportHeight = $(window).height();
-                            var imgWidth = parseInt(0.75*viewportWidth);
-                            var imgMaxHeight = parseInt(0.75*viewportHeight);
-                            var imgAspect = 400.0/620.0;
-                            var imgHeight = imgAspect * imgWidth;
-                            // Scale image if too high
-                            if (imgHeight > imgMaxHeight) {
-                                var imgRescale = imgMaxHeight / imgHeight;
-                                imgHeight = imgMaxHeight;
-                                imgWidth = imgRescale * imgWidth;
+                        var createImage = function(link) {
+                            var query = Modernizr.mq('(min-width: 661px)');
+                            var img;
+                            if (query) {
+                                img = $('<img src="' + link + '" height="400" width="620" />');
+                            } else {
+                                var marginWidth = 41;
+                                var marginHeight = 73;
+                                var viewportWidth = $(window).width();
+                                var viewportHeight = $(window).height();
+                                var imgWidth = parseInt(0.95*viewportWidth - marginWidth);
+                                var imgMaxHeight = parseInt(0.95*viewportHeight - marginHeight);
+                                var imgAspect = 400.0/620.0;
+                                var imgHeight = imgAspect * imgWidth;
+                                // Scale image if too high
+                                if (imgHeight > imgMaxHeight) {
+                                    var imgRescale = imgMaxHeight / imgHeight;
+                                    imgHeight = imgMaxHeight;
+                                    imgWidth = imgRescale * imgWidth;
+                                }
+                                // Ensure non-negative sizes
+                                imgHeight = Math.max(imgHeight, 0);
+                                imgWidth = Math.max(imgWidth, 0);
+                                img = $('<img src="' + link + '" height="' + imgHeight + '" width="' + imgWidth + '" />');
                             }
-                            img = $('<img src="' + link + '" height="' + imgHeight + '" width="' + imgWidth + '" />');
+                            return img;
                         }
+                        var img = createImage(link);
                         container.append(img);
-                        layer._map.openPopup(container.html(), evt.latlng, {maxWidth: 700, maxHeight: 600});
+                        var content = container.html();
+                        var popup = L.popup({maxWidth: 700, maxHeight: 600})
+                                     .setLatLng(evt.latlng)
+                                     .setContent(content);
+                        layer._map.openPopup(popup);
+                        // Resize image when viewport size changes
+                        var resizeCallback = function (evtResize) {
+                            var newImg = createImage(link);
+                            container.find('img').replaceWith(newImg);
+                            popup.setContent(container.html());
+                        };
+                        $(window).on('resize', resizeCallback);
+                        // Remove resize event listener when popup closed
+                        layer._map.on('popupclose', function(evtPopup, ee) {
+                            $(window).off('resize', resizeCallback);
+                        });
                     }
                 });
 

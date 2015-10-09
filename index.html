@@ -25,13 +25,15 @@
     <script src="bower_components/latlng-format/dist/latlng-format.min.js"></script>
     <script type="text/javascript" src="leaflet-layer-sealevel-denmark.js" charset="UTF-8"></script>
     <script>
-        var map = L.map('map').setView([56.2, 11.5], 6);
-        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</a>'
-        }).addTo(map);
-        var sealevel = new L.GeoJSON.Sealevel({url: 'sealevel_stations_denmark.json', language: 'en'});
-        map.addLayer(sealevel);
+        $(function() {
+            var map = L.map('map').setView([56.2, 11.5], 6);
+            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</a>'
+            }).addTo(map);
+            var sealevel = new L.GeoJSON.Sealevel({url: 'sealevel_stations_denmark.json', language: 'en'});
+            map.addLayer(sealevel);
+        });
     </script>
 </body>
 </html>
