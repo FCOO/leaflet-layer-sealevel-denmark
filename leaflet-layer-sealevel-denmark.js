@@ -24,7 +24,16 @@
                         container.append($(header));
                         var linkTemplate = location.protocol + "//chart.fcoo.dk/station_timeseries.asp?s=:003${stationId}:046SeaLvl:002DK:001DEFAULT:04d620:04e400:04f0:04a1:04b48:04i0:04c1:04g0:0641:05opopup";
                         var link = linkTemplate.replace('${stationId}', feature.properties.id);
-                        var img = $('<img src="' + link + '" height="400" width="620" />');
+                        var query = Modernizr.mq('(min-width: 620px)');
+                        if (query) {
+                            var img = $('<img src="' + link + '" height="400" width="620" />');
+                        } else {
+                            var viewportWidth = $(window).width();
+                            var imgWidth = parseInt(0.75*viewportWidth);
+                            var imgAspect = 400.0/620.0;
+                            var imgHeight = imgAspect * imgWidth;
+                            var img = $('<img src="' + link + '" height="' + imgHeight + '" width="' + imgWidth + '" />');
+                        }
                         container.append(img);
                         layer._map.openPopup(container.html(), evt.latlng, {maxWidth: 700, maxHeight: 600});
                     }
