@@ -64,10 +64,10 @@
                             container.find('img').replaceWith(newImg);
                             popup.setContent(container.html());
                         };
-                        $(window).on('resize', resizeCallback);
+                        $(window).on('resize orientationchange', resizeCallback);
                         // Remove resize event listener when popup closed
                         layer._map.on('popupclose', function(evtPopup, ee) {
-                            $(window).off('resize', resizeCallback);
+                            $(window).off('resize orientationchange', resizeCallback);
                         });
                     }
                 });
