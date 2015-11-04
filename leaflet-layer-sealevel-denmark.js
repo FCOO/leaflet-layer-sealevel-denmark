@@ -29,6 +29,7 @@
                             var query = true;
                             if (typeof window.matchMedia != "undefined" || typeof window.msMatchMedia != "undefined") {
                                 var mq = window.matchMedia('(min-width: 661px)');
+                                //var mq = window.matchMedia('screen and (orientation: landscape) and (min-width: 641px) and (min-height: 481px), screen and (orientation: portrait) and (min-width: 481px) and (min-height: 641px)');
                                 query = mq.matches;
                             }
                             var img;
