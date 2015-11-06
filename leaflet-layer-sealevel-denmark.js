@@ -6,8 +6,8 @@
     L.GeoJSON.Sealevel = L.GeoJSON.extend({
         options: {
             //language: 'en',
-            //url: '../bower_components/leaflet-layer-sealevel-denmark/sealevel_stations_denmark.json',
-            url: '../json/sealevel_stations_denmark.json',
+            url: '../bower_components/leaflet-layer-sealevel-denmark/sealevel_stations_denmark.json',
+            //url: '../json/sealevel_stations_denmark.json',
             onEachFeature: function (feature, layer) {
                 // Use click handler for substituting timezone information
                 layer.on({
@@ -95,13 +95,17 @@
             var that = this;
             L.setOptions(this, options);
             this._layers = {};
+            // jqxhr is a jQuery promise to get the requested JSON data
+            this.jqxhr = $.getJSON(this.options.url);
             //this.options.url = this.options.baseurl.replace('{language}', this.options.language);
+            this.jqxhr.done(function (data) {
+                that.addData(data);
+            });
         },
 
         onAdd: function (map) {
             var that = this;
-            $.getJSON(this.options.url, function (data) {
-                that.addData(data);
+            this.jqxhr.done(function (data) {
                 L.GeoJSON.prototype.onAdd.call(that, map);
             });
         },
