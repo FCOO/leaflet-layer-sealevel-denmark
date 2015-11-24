@@ -6,8 +6,8 @@
     L.GeoJSON.Sealevel = L.GeoJSON.extend({
         options: {
             //language: 'en',
-            url: '../bower_components/leaflet-layer-sealevel-denmark/sealevel_stations_denmark.json',
-            //url: '../json/sealevel_stations_denmark.json',
+            //url: '../bower_components/leaflet-layer-sealevel-denmark/sealevel_stations_denmark.json',
+            url: '../json/sealevel_stations_denmark.json',
             onEachFeature: function (feature, layer) {
                 // Use click handler for substituting timezone information
                 layer.on({
@@ -92,6 +92,7 @@
         },
 
         initialize: function (options) {
+            var msg;
             var that = this;
             L.setOptions(this, options);
             this._layers = {};
@@ -100,6 +101,10 @@
             //this.options.url = this.options.baseurl.replace('{language}', this.options.language);
             this.jqxhr.done(function (data) {
                 that.addData(data);
+            });
+            this.jqxhr.fail(function (data) {
+                msg = 'Failure retrieving station positions from ' + that.options.url;
+                noty({text: msg, type: 'error'});
             });
         },
 
