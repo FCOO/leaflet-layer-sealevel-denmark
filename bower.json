@@ -1,11 +1,29 @@
 {
   "name": "leaflet-layer-sealevel-denmark",
-  "main": "leaflet-layer-sealevel-denmark.js",
   "version": "0.1.0",
+  "homepage": "https://github.com/FCOO/leaflet-layer-sealevel-denmark",
   "authors": [
-    "Jesper Baasch-Larsen <jla@fcoo.dk>"
+    "Jesper Larsen jla@fcoo.dk"
   ],
-  "description": "Danish sea level stations for Leaflet",
+  "description": "",
+  "main": [
+    "dist/leaflet-layer-sealevel-denmark.min.js",
+    "dist/leaflet-layer-sealevel-denmark.min.css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/FCOO/leaflet-layer-sealevel-denmark.git"
+  },
+  "dependencies": {
+    "leaflet": "latest",
+    "jquery": "latest",
+    "latlng-format": "https://github.com/fcoo/latlng-format.git#^1.0.0"
+  },
+  "devDependencies": {
+    "bourbon": "latest",
+    "modernizr-mixin": "latest",
+    "mathsass": "latest"
+  },
   "license": "MIT",
   "ignore": [
     "**/.*",
@@ -14,13 +32,7 @@
     "test",
     "tests"
   ],
-  "dependencies": {
-    "jquery": "~2.1.4",
-    "latlng-format": "NielsHolt/latlng-format#master",
-    "leaflet.markercluster": "https://github.com/Leaflet/Leaflet.markercluster.git#master",
-    "leaflet": "https://github.com/jblarsen/Leaflet.git#~0.7.3"
-  },
-  "resolutions": {
-    "leaflet": ">= 0.7.0"
-  }
+  "moduleType": [
+    "es6"
+  ]
 }

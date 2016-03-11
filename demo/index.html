@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="da" style="font-size: 100%">
+<head>
+	<title>fcoo.dk - leaflet-layer-sealevel-denmark - Demo</title>
+	<meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv='x-dns-prefetch-control' content='on'>
+
+	<meta name='copyright' content='FCOO'>
+	<meta name='owner' content='FCOO'>
+
+  <link  href="bower_components.css" rel="stylesheet">	
+  <link  href="../src/leaflet-layer-sealevel-denmark.css" rel="stylesheet">	
+	<style>
+		body {
+			padding: 0;
+      margin: 0;
+    }
+        
+    html, body, #map {
+			height: 100%;
+     }
+	</style>
+</head>
+
+<body>
+	<div id="map" style="width: 800px; height: 600px"></div>
+
+
+	
+	
+	<script src="bower_components.js"></script>
+	<script src="../src/leaflet-layer-sealevel-denmark.js"></script>
+	<script>
+		$(function() {
+				//var cluster = L.markerClusterGroup({spiderfyDistanceMultiplier: 3});
+        var map = L.map('map').setView([56.2, 11.5], 6);
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					maxZoom: 10,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</a>'
+        }).addTo(map);
+
+				var sealevel = new L.GeoJSON.Sealevel({url: 'sealevel_stations_denmark.json', language: 'en'});
+//        map.addLayer(cluster);
+//        sealevel.jqxhr.done(function (data) {
+//					cluster.addLayer(sealevel);
+//        });
+        map.addLayer(sealevel);
+      });
+
+	</script>
+</body>
+</html>
