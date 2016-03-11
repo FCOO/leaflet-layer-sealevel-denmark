@@ -13,20 +13,8 @@ Leaflet control for Danish sea level stations.
 http://FCOO.github.io/leaflet-layer-sealevel-denmark/demo/ 
 
 ## Usage
-```var myLeafletLayerSealevelDenmark = new LeafletLayerSealevelDenmark( options );```
 
-
-### options
-| Id | Type | Default | Description |
-| :--: | :--: | :-----: | --- |
-| options1 | boolean | true | If <code>true</code> the ... |
-| options2 | string | null | Contain the ... |
-
-### Methods
-
-    .methods1( arg1, arg2,...): Do something
-    .methods2( arg1, arg2,...): Do something else
-
+See `/demo/index.html` for example of use 
 
 
 ## Copyright and License
