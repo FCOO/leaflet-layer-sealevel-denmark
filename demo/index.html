@@ -10,6 +10,7 @@
 	<meta name='owner' content='FCOO'>
 
   <link  href="bower_components.css" rel="stylesheet">	
+  <link  href="leaflet-control-mouseposition.css" rel="stylesheet">	
   <link  href="../src/leaflet-layer-sealevel-denmark.css" rel="stylesheet">	
 	<style>
 		body {
@@ -30,21 +31,18 @@
 	
 	
 	<script src="bower_components.js"></script>
+	<script src="leaflet-mouseposition.js"></script>
+	<script src="leaflet-control-mouseposition.js"></script>
 	<script src="../src/leaflet-layer-sealevel-denmark.js"></script>
 	<script>
 		$(function() {
-				//var cluster = L.markerClusterGroup({spiderfyDistanceMultiplier: 3});
-        var map = L.map('map').setView([56.2, 11.5], 6);
+        var map = L.map('map', {mousepositionControl:true}).setView([56.2, 11.5], 6);
         L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 					maxZoom: 10,
           attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</a>'
         }).addTo(map);
 
 				var sealevel = new L.GeoJSON.Sealevel({url: 'sealevel_stations_denmark.json', language: 'en'});
-//        map.addLayer(cluster);
-//        sealevel.jqxhr.done(function (data) {
-//					cluster.addLayer(sealevel);
-//        });
         map.addLayer(sealevel);
       });
 

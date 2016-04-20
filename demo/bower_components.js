@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v2.2.1
+ * jQuery JavaScript Library v2.2.3
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2016-02-22T19:11Z
+ * Date: 2016-04-05T19:26Z
  */
 
 (function( global, factory ) {
@@ -65,7 +65,7 @@ var support = {};
 
 
 var
-	version = "2.2.1",
+	version = "2.2.3",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -276,6 +276,7 @@ jQuery.extend( {
 	},
 
 	isPlainObject: function( obj ) {
+		var key;
 
 		// Not plain objects:
 		// - Any object or value whose internal [[Class]] property is not "[object Object]"
@@ -285,14 +286,18 @@ jQuery.extend( {
 			return false;
 		}
 
+		// Not own constructor property must be Object
 		if ( obj.constructor &&
-				!hasOwn.call( obj.constructor.prototype, "isPrototypeOf" ) ) {
+				!hasOwn.call( obj, "constructor" ) &&
+				!hasOwn.call( obj.constructor.prototype || {}, "isPrototypeOf" ) ) {
 			return false;
 		}
 
-		// If the function hasn't returned already, we're confident that
-		// |obj| is a plain object, created by {} or constructed with new Object
-		return true;
+		// Own properties are enumerated firstly, so to speed up,
+		// if last one is own, then all properties are own
+		for ( key in obj ) {}
+
+		return key === undefined || hasOwn.call( obj, key );
 	},
 
 	isEmptyObject: function( obj ) {
@@ -7325,6 +7330,12 @@ jQuery.extend( {
 	}
 } );
 
+// Support: IE <=11 only
+// Accessing the selectedIndex property
+// forces the browser to respect setting selected
+// on the option
+// The getter ensures a default option is selected
+// when in an optgroup
 if ( !support.optSelected ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
@@ -7333,6 +7344,16 @@ if ( !support.optSelected ) {
 				parent.parentNode.selectedIndex;
 			}
 			return null;
+		},
+		set: function( elem ) {
+			var parent = elem.parentNode;
+			if ( parent ) {
+				parent.selectedIndex;
+
+				if ( parent.parentNode ) {
+					parent.parentNode.selectedIndex;
+				}
+			}
 		}
 	};
 }
@@ -7527,7 +7548,8 @@ jQuery.fn.extend( {
 
 
 
-var rreturn = /\r/g;
+var rreturn = /\r/g,
+	rspaces = /[\x20\t\r\n\f]+/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
@@ -7603,9 +7625,15 @@ jQuery.extend( {
 		option: {
 			get: function( elem ) {
 
-				// Support: IE<11
-				// option.value not trimmed (#14858)
-				return jQuery.trim( elem.value );
+				var val = jQuery.find.attr( elem, "value" );
+				return val != null ?
+					val :
+
+					// Support: IE10-11+
+					// option.text throws exceptions (#14686, #14858)
+					// Strip and collapse whitespace
+					// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
+					jQuery.trim( jQuery.text( elem ) ).replace( rspaces, " " );
 			}
 		},
 		select: {
@@ -7658,7 +7686,7 @@ jQuery.extend( {
 				while ( i-- ) {
 					option = options[ i ];
 					if ( option.selected =
-							jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1
+						jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1
 					) {
 						optionSet = true;
 					}
@@ -9353,18 +9381,6 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
 
 
-// Support: Safari 8+
-// In Safari 8 documents created via document.implementation.createHTMLDocument
-// collapse sibling forms: the second one becomes a child of the first one.
-// Because of that, this security measure has to be disabled in Safari 8.
-// https://bugs.webkit.org/show_bug.cgi?id=137337
-support.createHTMLDocument = ( function() {
-	var body = document.implementation.createHTMLDocument( "" ).body;
-	body.innerHTML = "<form></form><form></form>";
-	return body.childNodes.length === 2;
-} )();
-
-
 // Argument "data" should be string of html
 // context (optional): If specified, the fragment will be created in this context,
 // defaults to document
@@ -9377,12 +9393,7 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 		keepScripts = context;
 		context = false;
 	}
-
-	// Stop scripts or inline event handlers from being executed immediately
-	// by using document.implementation
-	context = context || ( support.createHTMLDocument ?
-		document.implementation.createHTMLDocument( "" ) :
-		document );
+	context = context || document;
 
 	var parsed = rsingleTag.exec( data ),
 		scripts = !keepScripts && [];
@@ -9464,7 +9475,7 @@ jQuery.fn.load = function( url, params, callback ) {
 		// If it fails, this function gets "jqXHR", "status", "error"
 		} ).always( callback && function( jqXHR, status ) {
 			self.each( function() {
-				callback.apply( self, response || [ jqXHR.responseText, status, jqXHR ] );
+				callback.apply( this, response || [ jqXHR.responseText, status, jqXHR ] );
 			} );
 		} );
 	}
@@ -9829,7 +9840,7 @@ if ( !noGlobal ) {
 
 return jQuery;
 }));
-;!function(e){"use strict";function t(e){var t={};return t.hemisphere=e>=0?1:-1,e=Math.abs(e),t.degrees=Math.floor(e),t.degreesDecimal=Math.min(9999,Math.round(1e4*(e-t.degrees))),e=60*e%60,t.minutes=Math.floor(e),t.minutesDecimal=Math.min(999,Math.round(1e3*(e-t.minutes))),e=60*e%60,t.seconds=Math.floor(e),t.secondsDecimal=Math.min(9,Math.floor(10*(e-t.seconds))),t}function a(a){this.options=e.latLngFormat.latLngFormatOptions[a],this._valid=function(e,t){return new RegExp("^(?:"+this.options.regexp[e]+")$").test(t)},this.valid=function(e){return Array.isArray(e)?[this.validLat(e[0]),this.validLng(e[1])]:[]},this.validLat=function(e){return this._valid(0,e)},this.validLng=function(e){return this._valid(1,e)},this._textToDegrees=function(e,t){function a(e){var t=e.toString().length;return e/Math.pow(10,t)}if(t=t.toUpperCase().trim(),""===t||!this._valid(e,t))return null;var r=1;(t.indexOf("S")>-1||t.indexOf("W")>-1)&&(r=-1);var n,s,i=t.split(/\D/),o=0,c=0;for(n=0;n<i.length;n++)if(s=parseInt(i[n]),!isNaN(s)){switch(this.options.convertMask[c]){case"DDD":o+=s;break;case"MM":o+=s/60;break;case"mmm":o+=a(s)/60;break;case"s":o+=a(s)/3600;break;case"SS":o+=s/3600;break;case"dddd":o+=a(s)}if(c++,c>=this.options.convertMask.length)break}return r*o},this.textToDegrees=function(e){return Array.isArray(e)?[this.textToDegreesLat(e[0]),this.textToDegreesLng(e[1])]:[]},this.textToDegreesLat=function(e){return this._textToDegrees(0,e)},this.textToDegreesLng=function(e){return this._textToDegrees(1,e)},this._asText=function(e,a,r){function n(e,t){for(var a=""+e;a.length<t;)a="0"+a;return a}function s(e,t){for(var a=""+e;a.length<t;)a+="0";return a}if("number"!=typeof a)return"";var i=t(a),o=(r?this.options.editMask:this.options.displayMask).replace("H",e?1==i.hemisphere?"E":"W":1==i.hemisphere?"N":"S");return o=o.replace(/DDD/,i.degrees),o=o.replace(/dddd/,s(i.degreesDecimal,4)),o=o.replace(/MM/,n(i.minutes,2)),o=o.replace(/mmm/,s(i.minutesDecimal,3)),o=o.replace(/SS/,n(i.seconds,2)),o=o.replace(/s/,n(i.secondsDecimal,1))},this.asText=function(e,t){return Array.isArray(e)?[this.asTextLat(e[0],t),this.asTextLng(e[1],t)]:[]},this.asTextLat=function(e,t){return this._asText(0,e,t)},this.asTextLng=function(e,t){return this._asText(1,e,t)},this._convert=function(e,t,a){if(a&&a._valid(e,t)){var r=a._textToDegrees(e,t);return this._asText(e,r,!0)}return t},this.convert=function(e,t){return Array.isArray(e)?[this.convertLat(e[0],t),this.convertLng(e[1],t)]:[]},this.convertLat=function(e,t){return this._convert(0,e,t)},this.convertLng=function(e,t){return this._convert(1,e,t)}}e.latLngFormat=e.latLngFormat||{},e.latLngFormat.DMSs=0,e.latLngFormat.DMm=1,e.latLngFormat.Dd=2,e.latLngFormat.degreeChar="&#176;",e.latLngFormat.minutChar="'",e.latLngFormat.secondChar='"';var r=1.1;r=r.toLocaleString(),e.latLngFormat.decimalSeparator=e.latLngFormat.forceDecimalSeparator?e.latLngFormat.forceDecimalSeparator:r.indexOf(".")>-1?".":r.indexOf(",")>-1?",":".";var n={anySpace:"\\s*",hemisphereLat:"([nNsS])?",hemisphereLong:"([eEwW])?",DD:"((0?[0-9])|[1-8][0-9])",DDD:"((\\d?\\d)|1[0-7][0-9])",MM:"\\s((0?[0-9])|[1-5][0-9])"};n.SS=n.MM,n.seperator=n.anySpace+"[\\s\\.,]"+n.anySpace,n.dddd="("+n.seperator+"\\d{1,4})?",n.MMmmm="("+n.MM+"("+n.seperator+"\\d{1,3})?)?",n.MMSSs="("+n.MM+"("+n.SS+"("+n.seperator+"\\d{1,1})?)?)?";var s=e.latLngFormat.decimalSeparator,i=e.latLngFormat.degreeChar;e.latLngFormat.latLngFormatOptions=[{displayMask:"DDD"+i+"MM'SS"+s+'s"H',editMask:"DDD MM SS"+s+"sH",convertMask:["DDD","MM","SS","s"],regexp:[n.anySpace+"(90|"+n.DD+n.anySpace+n.MMSSs+")"+n.anySpace+n.hemisphereLat+n.anySpace,n.anySpace+"(180|"+n.DDD+n.anySpace+n.MMSSs+")"+n.anySpace+n.hemisphereLong+n.anySpace],placeholder:["89 59 59"+e.latLngFormat.decimalSeparator+"9N","179 59 59"+e.latLngFormat.decimalSeparator+"9E"]},{displayMask:"DDD"+i+"MM"+s+"mmm'H",editMask:"DDD MM"+s+"mmmH",convertMask:["DDD","MM","mmm"],regexp:[n.anySpace+"(90|"+n.DD+n.anySpace+n.MMmmm+")"+n.anySpace+n.hemisphereLat+n.anySpace,n.anySpace+"(180|"+n.DDD+n.anySpace+n.MMmmm+")"+n.anySpace+n.hemisphereLong+n.anySpace],placeholder:["89 59"+e.latLngFormat.decimalSeparator+"999N","179 59"+e.latLngFormat.decimalSeparator+"999E"]},{displayMask:"DDD"+s+"dddd"+i+"H",editMask:"DDD"+s+"ddddH",convertMask:["DDD","dddd"],regexp:[n.anySpace+"(90|"+n.DD+n.anySpace+n.dddd+")"+n.anySpace+n.hemisphereLat+n.anySpace,n.anySpace+"(180|"+n.DDD+n.anySpace+n.dddd+")"+n.anySpace+n.hemisphereLong+n.anySpace],placeholder:["89.9999N","179.9999E"]}],e.LatLngFormat=a}(this,document);;/*
+;!function(a,b,c,d){"use strict";function e(a){var b={};return b.hemisphere=a>=0?1:-1,a=Math.abs(a),b.degrees=Math.floor(a),b.degreesDecimal=Math.min(9999,Math.round(1e4*(a-b.degrees))),a=60*a%60,b.minutes=Math.floor(a),b.minutesDecimal=Math.min(999,Math.round(1e3*(a-b.minutes))),a=60*a%60,b.seconds=Math.floor(a),b.secondsDecimal=Math.min(9,Math.floor(10*(a-b.seconds))),b}function f(a){this.options={decimalSeparator:b.LATLNGFORMAT_DEFAULTDECIMALSEPARATOR,degreeChar:"&#176;"},this.setFormat(a)}b.LATLNGFORMAT_DMSS=0,b.LATLNGFORMAT_DMM=1,b.LATLNGFORMAT_DD=2;var g=1.1;g=g.toLocaleString(),b.LATLNGFORMAT_DEFAULTDECIMALSEPARATOR=g.indexOf(".")>-1?".":g.indexOf(",")>-1?",":".",b.LatLngFormat=f,b.LatLngFormat.prototype={setFormat:function(a){this.options.formatId=a,this._updateFormat()},setDecimalSeparator:function(a){this.options.decimalSeparator=a,this._updateFormat()},valid:function(a){return Array.isArray(a)?[this.validLat(a[0]),this.validLng(a[1])]:[]},validLat:function(a){return this._valid(0,a)},validLng:function(a){return this._valid(1,a)},textToDegrees:function(a){return Array.isArray(a)?[this.textToDegreesLat(a[0]),this.textToDegreesLng(a[1])]:[]},textToDegreesLat:function(a){return this._textToDegrees(0,a)},textToDegreesLng:function(a){return this._textToDegrees(1,a)},asText:function(a,b){return Array.isArray(a)?[this.asTextLat(a[0],b),this.asTextLng(a[1],b)]:[]},asTextLat:function(a,b){return this._asText(0,a,b)},asTextLng:function(a,b){return this._asText(1,a,b)},convert:function(a,b){return Array.isArray(a)?[this.convertLat(a[0],b),this.convertLng(a[1],b)]:[]},convertLat:function(a,b){return this._convert(0,a,b)},convertLng:function(a,b){return this._convert(1,a,b)},_valid:function(a,b){return new RegExp("^(?:"+this.options.regexp[a]+")$").test(b)},_textToDegrees:function(a,b){function c(a){var b=a.toString().length;return a/Math.pow(10,b)}if(b=b.toUpperCase().trim(),""===b||!this._valid(a,b))return null;var d=1;(b.indexOf("S")>-1||b.indexOf("W")>-1)&&(d=-1);var e,f,g=b.split(/\D/),h=0,i=0;for(e=0;e<g.length;e++)if(f=parseInt(g[e]),!isNaN(f)){switch(this.options.convertMask[i]){case"DDD":h+=f;break;case"MM":h+=f/60;break;case"mmm":h+=c(f)/60;break;case"s":h+=c(f)/3600;break;case"SS":h+=f/3600;break;case"dddd":h+=c(f)}if(i++,i>=this.options.convertMask.length)break}return d*h},_asText:function(a,b,c){function d(a,b){for(var c=""+a;c.length<b;)c="0"+c;return c}function f(a,b){for(var c=""+a;c.length<b;)c+="0";return c}if("number"!=typeof b)return"";var g=e(b),h=(c?this.options.editMask:this.options.displayMask).replace("H",a?1==g.hemisphere?"E":"W":1==g.hemisphere?"N":"S");return h=h.replace(/DDD/,g.degrees),h=h.replace(/dddd/,f(g.degreesDecimal,4)),h=h.replace(/MM/,d(g.minutes,2)),h=h.replace(/mmm/,f(g.minutesDecimal,3)),h=h.replace(/SS/,d(g.seconds,2)),h=h.replace(/s/,d(g.secondsDecimal,1))},_convert:function(a,b,c){if(c&&c._valid(a,b)){var d=c._textToDegrees(a,b);return this._asText(a,d,!0)}return b},_updateFormat:function(){var c={anySpace:"\\s*",hemisphereLat:"([nNsS])?",hemisphereLong:"([eEwW])?",DD:"((0?[0-9])|[1-8][0-9])",DDD:"((\\d?\\d)|1[0-7][0-9])",MM:"\\s((0?[0-9])|[1-5][0-9])"};c.SS=c.MM,c.seperator=c.anySpace+"[\\s\\.,]"+c.anySpace,c.dddd="("+c.seperator+"\\d{1,4})?",c.MMmmm="("+c.MM+"("+c.seperator+"\\d{1,3})?)?",c.MMSSs="("+c.MM+"("+c.SS+"("+c.seperator+"\\d{1,1})?)?)?";var d=this.options.decimalSeparator,e=this.options.degreeChar,f={};switch(this.options.formatId){case b.LATLNGFORMAT_DMSS:f={displayMask:"DDD"+e+"MM'SS"+d+'s"H',editMask:"DDD MM SS"+d+"sH",convertMask:["DDD","MM","SS","s"],regexp:[c.anySpace+"(90|"+c.DD+c.anySpace+c.MMSSs+")"+c.anySpace+c.hemisphereLat+c.anySpace,c.anySpace+"(180|"+c.DDD+c.anySpace+c.MMSSs+")"+c.anySpace+c.hemisphereLong+c.anySpace],placeholder:["89 59 59"+d+"9N","179 59 59"+d+"9E"]};break;case b.LATLNGFORMAT_DMM:f={displayMask:"DDD"+e+"MM"+d+"mmm'H",editMask:"DDD MM"+d+"mmmH",convertMask:["DDD","MM","mmm"],regexp:[c.anySpace+"(90|"+c.DD+c.anySpace+c.MMmmm+")"+c.anySpace+c.hemisphereLat+c.anySpace,c.anySpace+"(180|"+c.DDD+c.anySpace+c.MMmmm+")"+c.anySpace+c.hemisphereLong+c.anySpace],placeholder:["89 59"+d+"999N","179 59"+d+"999E"]};break;case b.LATLNGFORMAT_DD:f={displayMask:"DDD"+d+"dddd"+e+"H",editMask:"DDD"+d+"ddddH",convertMask:["DDD","dddd"],regexp:[c.anySpace+"(90|"+c.DD+c.anySpace+c.dddd+")"+c.anySpace+c.hemisphereLat+c.anySpace,c.anySpace+"(180|"+c.DDD+c.anySpace+c.dddd+")"+c.anySpace+c.hemisphereLong+c.anySpace],placeholder:["89.9999N","179.9999E"]}}a.extend(this.options,f)}}}(jQuery,this,document);;/*
  Leaflet, a JavaScript library for mobile-friendly interactive maps. http://leafletjs.com
  (c) 2010-2013, Vladimir Agafonkin
  (c) 2010-2011, CloudMade
@@ -18996,4 +19007,4 @@ L.Map.include({
 });
 
 
-}(window, document));
+}(window, document));;!function(a,b,c,d){"use strict";a.extend(a.LatLng,{FORMAT_DMSS:b.LATLNGFORMAT_DMSS,FORMAT_SMM:b.LATLNGFORMAT_DMM,FORMAT_DD:b.LATLNGFORMAT_DD,format:new b.LatLngFormat(b.LATLNGFORMAT_DMSS),setFormat:function(b,c){a.LatLng.format.setFormat(b),c&&c.fireEvent("latlngformatchange",{format:this.format})},changeFormat:function(a){this.setFormat((this.format.options.formatId+1)%(this.FORMAT_DD+1),a)}}),a.extend(a.LatLng.prototype,{latAsFormat:function(){return a.LatLng.format.asTextLat(this.lat)},lngAsFormat:function(){return a.LatLng.format.asTextLng(this.lng)},asFormat:function(){return a.LatLng.format.asText([this.lat,this.lng])}})}(L,this,document);

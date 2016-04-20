@@ -1,6 +1,6 @@
 {
   "name": "leaflet-layer-sealevel-denmark",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "homepage": "https://github.com/FCOO/leaflet-layer-sealevel-denmark",
   "authors": [
     "Jesper Larsen jla@fcoo.dk"
@@ -17,7 +17,8 @@
   "dependencies": {
     "leaflet": "latest",
     "jquery": "latest",
-    "latlng-format": "https://github.com/fcoo/latlng-format.git#^1.0.0"
+    "latlng-format": "fcoo/latlng-format",
+    "leaflet-latlng-format": "fcoo/leaflet-latlng-format"
   },
   "devDependencies": {
     "bourbon": "latest",
