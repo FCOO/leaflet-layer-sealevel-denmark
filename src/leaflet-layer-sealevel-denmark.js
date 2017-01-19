@@ -29,7 +29,7 @@
                             header = headerTemplate.replace('${name}', feature.properties.nameDK);
                             //header = header.replace('${position}', position);
 
-                        header = header.replace('${position}', latLng.asFormat().join('&nbsp;&nbsp;&nbsp;'));
+                        header = header.replace('${position}', latLng.format().join('&nbsp;&nbsp;&nbsp;'));
                         container.append($(header));
 
                         var linkTemplate = protocol + "//chart.fcoo.dk/station_timeseries.asp?s=:003${stationId}:046SeaLvl:002DK:001DEFAULT:04d620:04e400:04f0:04a1:04b48:04i0:04c1:04g0:0641:05opopup",
