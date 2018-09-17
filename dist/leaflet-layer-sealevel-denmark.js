@@ -13,6 +13,11 @@
     var imgWidth = 600,
         imgHeight = 400;
 
+    function getTextObjFromFeature( feature ){
+        var properties = feature.properties;
+        return {da: properties.nameDK || properties.name, en: properties.nameENG || properties.name}
+    }
+
     function layerSealevelOnPopupopen( popupEvent ){
         var popup = popupEvent.popup,
             layer = popup._source,
@@ -35,9 +40,9 @@
                     'MODE=popup&' +
                     'ID=' + layer.feature.properties.id,
 
-                $img = $('<img/>')
-                    .attr('src', link)
-                    .css({width: imgWidth, height: imgHeight });
+            $img = $('<img/>')
+                .attr('src', link)
+                .css({width: imgWidth, height: imgHeight });
 
         popup.changeContent( $img );
     }
@@ -52,9 +57,7 @@
                     fixable: true,
                     scroll : 'horizontal',
                     header : [
-                        {icon: 'fa-chart-line', text: {da: feature.properties.nameDK, en: feature.properties.nameENG}},
-                        '&nbsp;',
-                        L.latLng( feature.geometry.coordinates[1], feature.geometry.coordinates[0] ).format().join('&nbsp;&nbsp;&nbsp;')
+                        {icon: 'fa-chart-line', text: [{da: 'Vandstand -', en: 'Sea level -'}, getTextObjFromFeature(feature)]}
                     ],
                     //Add 'dummy' content to get popup dimentions correct on first open
                     content: $('<div/>').css({
@@ -68,14 +71,15 @@
             },
 
             pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, {
-                                        radius: 7,
-                                        fillColor: "#ff7800",
-                                        color: "#000",
-                                        weight: 1,
-                                        opacity: 1,
-                                        fillOpacity: 0.8
-                                    });
+                return  L.circleMarker(latlng, {
+                            radius     : 7,
+                            fillColor  : "#ff7800",
+                            color      : "#000",
+                            weight     : 1,
+                            opacity    : 1,
+                            fillOpacity: 0.8
+                        })
+                        .bindTooltip({text: getTextObjFromFeature( feature )});
             }
         },
 
