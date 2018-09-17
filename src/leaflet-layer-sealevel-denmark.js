@@ -10,7 +10,7 @@
 (function ($, L, window/*, document, undefined*/) {
     "use strict";
 
-    var imgWidth = 555,
+    var imgWidth = 600,
         imgHeight = 400;
 
     function layerSealevelOnPopupopen( popupEvent ){
