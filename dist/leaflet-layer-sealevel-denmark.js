@@ -11,11 +11,16 @@
     "use strict";
 
     var imgWidth = 600,
-        imgHeight = 400;
+        imgHeight = 400,
+        bsMarkerOptions = {
+            colorName  : 'orange',
+            transparent: true,
+            hover      : true
+        };
 
     function getTextObjFromFeature( feature ){
         var properties = feature.properties;
-        return {da: properties.nameDK || properties.name, en: properties.nameENG || properties.name}
+        return {da: properties.nameDK || properties.name, en: properties.nameENG || properties.name};
     }
 
     function layerSealevelOnPopupopen( popupEvent ){
@@ -56,30 +61,22 @@
                     width  : 15 + imgWidth + 15,
                     fixable: true,
                     scroll : 'horizontal',
-                    header : [
-                        {icon: 'fa-chart-line', text: [{da: 'Vandstand -', en: 'Sea level -'}, getTextObjFromFeature(feature)]}
-                    ],
+                    header : {
+                        icon: L.bsMarkerAsIcon(bsMarkerOptions.colorName),
+                        text: [{da: 'Vandstand -', en: 'Sea level -'}, getTextObjFromFeature(feature)]
+                    },
                     //Add 'dummy' content to get popup dimentions correct on first open
-                    content: $('<div/>').css({
-                                width: imgWidth,
-                                height: imgHeight
-                             })
+                    content: $('<div/>').css({width: imgWidth, height: imgHeight})
+
+
+
+
                 });
-
                 layer.on('popupopen', layerSealevelOnPopupopen );
-
             },
 
             pointToLayer: function (feature, latlng) {
-                return  L.circleMarker(latlng, {
-                            radius     : 7,
-                            fillColor  : "#ff7800",
-                            color      : "#000",
-                            weight     : 1,
-                            opacity    : 1,
-                            fillOpacity: 0.8
-                        })
-                        .bindTooltip({text: getTextObjFromFeature( feature )});
+                return L.bsMarker( latlng, bsMarkerOptions).bindTooltip({text: getTextObjFromFeature( feature )});
             }
         },
 
@@ -97,6 +94,3 @@
     return L.GeoJSON.Sealevel;
 
 }(jQuery, L, this, document));
-
-
-
