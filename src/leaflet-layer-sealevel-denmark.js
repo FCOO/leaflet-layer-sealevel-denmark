@@ -15,7 +15,8 @@
         bsMarkerOptions = {
             colorName  : 'orange',
             transparent: true,
-            hover      : true
+            hover      : true,
+            tooltipHideWhenPopupOpen: true
         };
 
     function getTextObjFromFeature( feature ){
