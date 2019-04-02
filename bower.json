@@ -1,9 +1,9 @@
 {
   "name": "leaflet-layer-sealevel-denmark",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "homepage": "https://github.com/FCOO/leaflet-layer-sealevel-denmark",
   "authors": [
-    "Jesper Larsen jla@fcoo.dk"
+    "Niels Holt nho@fcoo.dk"
   ],
   "description": "",
   "main": "dist/leaflet-layer-sealevel-denmark.js",
@@ -14,10 +14,9 @@
   "dependencies": {
     "leaflet": "latest",
     "jquery": "latest",
-    "leaflet-latlng-format": "fcoo/leaflet-latlng-format#^1.0.0",
     "leaflet-bootstrap": "fcoo/leaflet-bootstrap#^2.1.1",
     "promise-get": "fcoo/promise-get#^1.0.1",
-    "leaflet-bootstrap-marker": "fcoo/leaflet-bootstrap-marker#^1.0.2"
+    "leaflet-bootstrap-marker": "fcoo/leaflet-bootstrap-marker#^2.2.0"
   },
   "devDependencies": {
     "bourbon": "latest",
